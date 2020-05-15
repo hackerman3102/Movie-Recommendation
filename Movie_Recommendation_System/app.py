@@ -1,7 +1,6 @@
-
 import numpy as np
-from flask import Flask, request, jsonify, render_template
-import pandas as pd
+from flask import Flask, request, jsonify, render_template,json
+import pandas as pd 
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -33,10 +32,13 @@ def home():
 @app.route('/predict',methods=['POST'])
 def predict():
     '''
-    For rendering results on HTML GUI
+    For rendering results on HTML GUImovie_user_likes
     '''
+    print(request)
+    print(request.json)
     lst=[]
-    movie_user_likes = "Inception"
+    movie_user_likes = request.json["Movie"]
+    print(movie_user_likes)
     movie_index = get_index_from_title(movie_user_likes)
     similar_movies = list(enumerate(cosine_sim[movie_index]))
     sorted_similar_movies = sorted(similar_movies, key=lambda x: x[1], reverse=True)[1:]
@@ -44,17 +46,12 @@ def predict():
     print("Top 5 similar movies to " + movie_user_likes + " are:\n")
     for element in sorted_similar_movies:
         if(vote_counts[element[0]]>=3000):
-
-
             lst.append(get_title_from_index(element[0]))
-
             i = i + 1
             if i >= 5:
                 break
-
-
-
-    return render_template('index.html', prediction_text='{}'.format(lst))
+    print(lst)
+    return json.dumps({'lst':lst})
 
 
 if __name__ == "__main__":
