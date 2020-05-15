@@ -10,7 +10,7 @@
 <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
-<link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+
 
 </head>
 
@@ -20,27 +20,38 @@
 
      <!-- Main Input For Receiving Query to our ML -->
     <form action="/predict"method="post">
-    	<!-- <input type="text" name="Movie" id="Movie" placeholder="Enter Movie Name" required="required" /> -->
-      <select class="js-example-basic-multiple" name="states[]" multiple="multiple">
-        <option value="AL">Alabama</option>
-        <option  value="AL">ram</option>
-        <option  value="AL">helo</option>
-        <option  value="AL">Alabama</option>
-      </select>
+    <!-- <input type="text" name="Movie" id="Movie" placeholder="Enter Movie Name" required="required" /> -->
 
+   <!-- <input type="text" name="Movie" id="Movie" placeholder="Enter Movie Name" required="required" /> -->
+      <!-- <label for="browser">Choose your browser from the list:</label> -->
+      <input list="browsers" name="Movie" id="Movie" placeholder="Enter Movie Name" required="required">
+      <datalist id="browsers">
+        {% for m in Movies %}
+        <option value="{{ m }}">
+          {% endfor %}
+      </datalist>
         <button type="submit" id="predict" class="btn btn-primary btn-block btn-large">Predict</button>
     </form>
 
    <br>
    <br>
-   {{ prediction_text }}
+   <div>
+     <h1>Some Similar Movies</h1>
+     <ol id="sm">
+      <li style="display: none;"></li>
+     </ol>
+   </div>
 
  </div>
+
+
 
 
 </body>
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>  
@@ -50,8 +61,8 @@
         $('#predict').click(function(e) {
           e.preventDefault();
           var Movie = ($('#Movie').val());
+      
 
-          
         $.ajax({
           type : 'POST',
           url : "/predict",
@@ -62,9 +73,13 @@
           }
       }).done(function (data) {
           console.log("OK");
-          console.log({data})
-          // $('#addedbrand').html(data.brandname)
-          // $('#addedbrandrow').removeAttr("style");
+          
+          (data.lst).forEach(element => {
+            
+            $('#sm li:last').after('<li>'+element+'</li>');  
+          });
+         
+         
 
       }).fail(function ( jqXHR, textStatus, errorThrown ) {
           console.log(jqXHR);

@@ -6,6 +6,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 df = pd.read_csv("movie_dataset.csv")
 vote_counts=df['vote_count']
+Movies=df['title']
 
 features = ['keywords','cast','genres','director']
 def combine_features(row):
@@ -27,7 +28,8 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    print(Movies)
+    return render_template('index.html',Movies=Movies)
 
 @app.route('/predict',methods=['POST'])
 def predict():
@@ -51,7 +53,7 @@ def predict():
             if i >= 5:
                 break
     print(lst)
-    return json.dumps({'lst':lst})
+    return jsonify(lst=lst)
 
 
 if __name__ == "__main__":
