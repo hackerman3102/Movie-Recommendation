@@ -45,7 +45,7 @@ pluggy==0.6.0
 powerline-status==2.6
 protobuf==3.0.0
 psutil==5.4.2
-py==1.5.2
+py==1.10.0
 pycairo==1.16.2
 pycrypto==2.6.1
 pycups==1.9.73
